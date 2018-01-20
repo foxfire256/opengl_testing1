@@ -228,6 +228,14 @@ set(SOURCE_QT
 	qt/opengl_window.hpp
 	qt/opengl_window.cpp
 	)
+set(SOURCE_GFX
+	gfx/gfx.hpp
+	gfx/gfx.cpp
+	gfx/gfx_factory.hpp
+	gfx/gfx_factory.cpp
+	gfx/gfx_opengl.hpp
+	gfx/gfx_opengl.cpp
+	)
 
 # static libraries don't work so well on Apple for some reason
 if(APPLE)
@@ -236,14 +244,14 @@ else(APPLE)
 	set(LIBRARY_TYPE STATIC)
 endif(APPLE)
 
-add_executable(${PROJECT_NAME}_sdl ${MAIN_SOURCE_SDL})
+add_executable(${PROJECT_NAME}_sdl ${MAIN_SOURCE_SDL} ${SOURCE_SDL} ${SOURCE_GFX})
 target_link_libraries(${PROJECT_NAME}_sdl ${LIBS} ${SDL_LIBS})
 # this is needed to make headers work
 #target_include_directories(${PROJECT_NAME}_sdl PUBLIC sdl)
 
 # Instruct CMake to run Qt moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
-add_executable(${PROJECT_NAME}_qt ${MAIN_SOURCE_QT} ${SOURCE_QT})
+add_executable(${PROJECT_NAME}_qt ${MAIN_SOURCE_QT} ${SOURCE_QT} ${SOURCE_GFX})
 target_link_libraries(${PROJECT_NAME}_qt ${LIBS} ${QT_LIBS})
 #target_include_directories(${PROJECT_NAME}_qt PUBLIC qt)
 set(CMAKE_AUTOMOC OFF)

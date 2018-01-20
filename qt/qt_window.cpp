@@ -4,7 +4,7 @@
 
 qt_window::qt_window()
 {
-	
+
 }
 
 void qt_window::render()
