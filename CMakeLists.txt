@@ -23,10 +23,11 @@ if(MSVC)
 	SET(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS}")
 	
 	find_package(OpenGL REQUIRED)
-	find_library(OPENGL_LIBRARY NAMES OpenGL32 opengl32)
+	#find_library(OPENGL_LIBRARY NAMES OpenGL32 opengl32)
 	
 	find_package(Qt5Core)
 	find_package(Qt5Widgets)
+	find_package(Qt5OpenGL)
 	
 	set(LIBS ${LIBS} kernel32.lib)
 	set(SDL2_LIBS
@@ -46,9 +47,9 @@ if(MSVC)
 		debug "C:\\vclibs\\vc2015libs\\lib\\debug\\glew32d.lib")
 	set(GUI_LIBS ${GUI_LIBS} ${OPENGL_LIBRARY})
 	
-	set(PNG_LIBRARIES
-		optimized "C:\\vclibs\\vc2015libs\\lib\\libpng16.lib"
-		debug "C:\\vclibs\\vc2015libs\\lib\\debug\\libpng16d.lib")
+	#set(PNG_LIBRARIES
+	#	optimized "C:\\vclibs\\vc2015libs\\lib\\libpng16.lib"
+	#	debug "C:\\vclibs\\vc2015libs\\lib\\debug\\libpng16d.lib")
 	
 	set(BOOST_LIBS ${BOOST_LIBS}
 		optimized "C:\\vclibs\\vc2015libs\\lib\\libboost_program_options-vc140-mt-1_63.lib"
@@ -69,23 +70,38 @@ if(MINGW OR MSYS)
 	set(CMAKE_LIBRARY_PATH "c:/msys64/mingw64/lib")
 	
 	find_package(OpenGL REQUIRED)
-	find_library(OPENGL_LIBRARY NAMES OpenGL32 opengl32)
-	find_package(Freetype REQUIRED)
-	include_directories(${FREETYPE_INCLUDE_DIRS})
-	find_package(PNG REQUIRED)
-	include_directories(${PNG_INCLUDE_DIR})
+	find_library(OPENGL_LIBRARY NAMES GL)
+	#find_package(Freetype REQUIRED)
+	#include_directories(${FREETYPE_INCLUDE_DIRS})
+	#find_package(PNG REQUIRED)
+	#include_directories(${PNG_INCLUDE_DIR})
 	find_package(Boost COMPONENTS program_options system filesystem REQUIRED)
 	include_directories(${Boost_INCLUDE_DIRS})
 	find_package(GLEW REQUIRED)
 	include_directories(${GLEW_INCLUDE_DIRS})
-	
+
+	INCLUDE(FindPkgConfig)
+
+	PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+	include_directories(${SDL2_INCLUDE_DIR})
+
 	set(BOOST_LIBS ${Boost_LIBRARIES})
-	set(LIBS ${LIBS} -lmingw32)
-	set(SDL2_LIBS -lSDL2main -lSDL2)
-	set(GUI_LIBS ${SDL2_LIBS} -lSDL2_ttf -lSDL2_image ${OPENGL_LIBRARY} ${GLEW_LIBRARIES})
-	
+	set(LIBS ${LIBS} ${Boost_LIBRARIES})
+	set(SDL_LIBS
+		${SDL2_LIBRARIES}
+		${GLEW_LIBRARIES}
+		${OPENGL_LIBRARIES}
+		)
+
 	find_package(Qt5Core)
 	find_package(Qt5Widgets)
+	find_package(Qt5OpenGL)
+	
+	set(QT_LIBS
+		Qt5::Core Qt5::Widgets Qt5::OpenGL
+		${GLEW_LIBRARIES}
+		${OPENGL_LIBRARIES}
+		)
 	
 	include_directories("c:/msys64/mingw64/include/eigen3")
 endif(MINGW OR MSYS)
@@ -96,11 +112,11 @@ if(APPLE)
 	set(CMAKE_LIBRARY_PATH "/usr/local/lib")
 	
 	find_package(OpenGL REQUIRED)
-	find_library(OPENGL_LIBRARY NAMES OpenGL)
-	find_package(Freetype REQUIRED)
-	include_directories(${FREETYPE_INCLUDE_DIRS})
-	find_package(PNG REQUIRED)
-	include_directories(${PNG_INCLUDE_DIR})
+	#find_library(OPENGL_LIBRARY NAMES OpenGL)
+	#find_package(Freetype REQUIRED)
+	#include_directories(${FREETYPE_INCLUDE_DIRS})
+	#find_package(PNG REQUIRED)
+	#include_directories(${PNG_INCLUDE_DIR})
 	find_package(Boost COMPONENTS program_options system filesystem REQUIRED)
 	include_directories(${Boost_INCLUDE_DIRS})
 	find_package(GLEW REQUIRED)
@@ -114,27 +130,34 @@ if(APPLE)
 	include_directories(${SDL2_INCLUDE_DIR})
 
 	set(BOOST_LIBS ${Boost_LIBRARIES})
-	set(LIBS ${LIBS} -L/usr/local/lib)
-	set(SDL2_LIBS ${SDL2_LIBRARIES})
-	set(GUI_LIBS ${SDL2_LIBS} -lSDL2_ttf -lSDL2_image ${OPENGL_LIBRARY} ${GLEW_LIBRARIES})
-	set(SOUND_LIBS -lSDL2_mixer -lvorbis -logg -lz)
+	set(LIBS ${LIBS} ${Boost_LIBRARIES})
+	set(SDL_LIBS
+		${SDL2_LIBRARIES}
+		${GLEW_LIBRARIES}
+		${OPENGL_LIBRARIES}
+		)
 
 	# If there are problems with qt5 on Apple run 'which qmake' and make sure
 	# it is the correct one. Usually you have to run 'brew link qt5 --force'.
 	# Anaconda causes problems too since it has qt4 and other libs.
-	#[[
-	set(CMAKE_PREFIX_PATH "/usr/local/Cellar/qt5/5.6.1")
-	set(CMAKE_INCLUDE_PATH "/usr/local/Cellar/qt5/5.6.1/include")
-	set(CMAKE_LIBRARY_PATH "/usr/local/Cellar/qt5/5.6.1/lib")
+	set(CMAKE_PREFIX_PATH "/usr/local/opt/qt")
+	set(CMAKE_INCLUDE_PATH "/usr/local/opt/qt/include")
+	set(CMAKE_LIBRARY_PATH "/usr/local/opt/qt/lib")
 	find_package(Qt5Core)
 	find_package(Qt5Widgets)
+	find_package(Qt5OpenGL)
+	
+	set(QT_LIBS
+		Qt5::Core Qt5::Widgets Qt5::OpenGL
+		${GLEW_LIBRARIES}
+		${OPENGL_LIBRARIES}
+		)
+	
+	include_directories("/usr/local/opt/qt/include")
+	
 	set(CMAKE_PREFIX_PATH "/usr/local")
 	set(CMAKE_INCLUDE_PATH "/usr/local/include")
 	set(CMAKE_LIBRARY_PATH "/usr/local/lib")
-	include_directories("/usr/local/Cellar/qt5/5.6.1/include")
-
-	set(EDITOR_LIBS -L/usr/local/Cellar/qt5/5.6.1/lib)
-	]]
 	
 	include_directories("/usr/local/include")
 	include_directories("/usr/local/include/eigen3")
