@@ -148,10 +148,10 @@ if(UNIX AND NOT APPLE)
 
 	find_package(OpenGL REQUIRED)
 	find_library(OPENGL_LIBRARY NAMES GL)
-	find_package(Freetype REQUIRED)
-	include_directories(${FREETYPE_INCLUDE_DIRS})
-	find_package(PNG REQUIRED)
-	include_directories(${PNG_INCLUDE_DIR})
+	#find_package(Freetype REQUIRED)
+	#include_directories(${FREETYPE_INCLUDE_DIRS})
+	#find_package(PNG REQUIRED)
+	#include_directories(${PNG_INCLUDE_DIR})
 	find_package(Boost COMPONENTS program_options system filesystem REQUIRED)
 	include_directories(${Boost_INCLUDE_DIRS})
 	find_package(GLEW REQUIRED)
@@ -164,14 +164,22 @@ if(UNIX AND NOT APPLE)
 
 	set(BOOST_LIBS ${Boost_LIBRARIES})
 	set(LIBS ${LIBS} ${Boost_LIBRARIES})
-	set(SDL_LIBS ${SDL2_LIBRARIES})
+	set(SDL_LIBS
+		${SDL2_LIBRARIES}
+		${GLEW_LIBRARIES}
+		${OPENGL_LIBRARIES}
+		)
 
 	find_package(Qt5Core)
 	find_package(Qt5Widgets)
 	find_package(Qt5OpenGL)
 	
-	set(QT_LIBS Qt5::Core Qt5::Widgets Qt5::OpenGL)
-
+	set(QT_LIBS
+		Qt5::Core Qt5::Widgets Qt5::OpenGL
+		${GLEW_LIBRARIES}
+		${OPENGL_LIBRARIES}
+		)
+ 
 	include_directories("/usr/include")
 	include_directories("/usr/include/eigen3")
 

@@ -3,10 +3,11 @@
 //
 
 #include "sdl_window.hpp"
+#include "gfx/gfx_factory.hpp"
+#include "gfx/gfx.hpp"
 
 sdl_window::sdl_window()
 {
-
 }
 
 sdl_window::~sdl_window()
@@ -70,10 +71,21 @@ void sdl_window::init()
 	
 	// 0 = no vsync
 	SDL_GL_SetSwapInterval(0);
+	
+	gf = new gfx_factory();
+	g = gf->get_gfx();
+	g->init();
 }
 
 void sdl_window::deinit()
 {
+	g->deinit();
+	
+	if(gf)
+		delete gf;
+	if(g)
+		delete g;
+	
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(window);
 	
@@ -93,6 +105,9 @@ void sdl_window::render()
 		SDL_Quit();
 		exit(1);
 	}
+	
+	g->render();
+	
 	SDL_GL_SwapWindow(window);
 }
 

@@ -12,6 +12,9 @@
 
 #include <SDL2/SDL.h>
 
+class gfx;
+class gfx_factory;
+
 class sdl_window
 {
 public:
@@ -29,6 +32,9 @@ private:
 	SDL_Window *window;
 	SDL_GLContext context;
 	int done;
+	
+	gfx *g;
+	gfx_factory *gf;
 };
 
 
