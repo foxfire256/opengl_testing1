@@ -222,6 +222,10 @@ set(MAIN_SOURCE_QT
 set(MAIN_SOURCE_SDL
 	main_sdl.cpp
 )
+set(SOURCE_SDL
+	sdl/sdl_window.hpp
+	sdl/sdl_window.cpp
+	)
 set(SOURCE_QT
 	qt/qt_window.hpp
 	qt/qt_window.cpp

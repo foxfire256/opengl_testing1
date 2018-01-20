@@ -5,7 +5,7 @@
 #ifndef GFX_FACTORY_HPP
 #define GFX_FACTORY_HPP
 
-#include "gfx.hpp"
+class gfx;
 
 class gfx_factory
 {
