@@ -168,8 +168,9 @@ if(UNIX AND NOT APPLE)
 
 	find_package(Qt5Core)
 	find_package(Qt5Widgets)
+	find_package(Qt5OpenGL)
 	
-	set(QT_LIBS Qt5::Core Qt5::Widgets)
+	set(QT_LIBS Qt5::Core Qt5::Widgets Qt5::OpenGL)
 
 	include_directories("/usr/include")
 	include_directories("/usr/include/eigen3")
@@ -221,7 +222,12 @@ set(MAIN_SOURCE_QT
 set(MAIN_SOURCE_SDL
 	main_sdl.cpp
 )
-
+set(SOURCE_QT
+	qt/qt_window.hpp
+	qt/qt_window.cpp
+	qt/opengl_window.hpp
+	qt/opengl_window.cpp
+	)
 
 # static libraries don't work so well on Apple for some reason
 if(APPLE)
@@ -232,11 +238,14 @@ endif(APPLE)
 
 add_executable(${PROJECT_NAME}_sdl ${MAIN_SOURCE_SDL})
 target_link_libraries(${PROJECT_NAME}_sdl ${LIBS} ${SDL_LIBS})
+# this is needed to make headers work
+#target_include_directories(${PROJECT_NAME}_sdl PUBLIC sdl)
 
 # Instruct CMake to run Qt moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
-add_executable(${PROJECT_NAME}_qt ${MAIN_SOURCE_QT})
+add_executable(${PROJECT_NAME}_qt ${MAIN_SOURCE_QT} ${SOURCE_QT})
 target_link_libraries(${PROJECT_NAME}_qt ${LIBS} ${QT_LIBS})
+#target_include_directories(${PROJECT_NAME}_qt PUBLIC qt)
 set(CMAKE_AUTOMOC OFF)
 
 

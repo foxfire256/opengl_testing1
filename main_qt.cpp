@@ -1,7 +1,18 @@
 
+#include <QtGui/QGuiApplication>
+
+#include "qt/qt_window.hpp"
+
 int main(int argc, char **argv)
 {
-	return 0;
+	QGuiApplication app(argc, argv);
+	
+	qt_window window;
+	window.show();
+	
+	window.setAnimating(true);
+	
+	return app.exec();
 }
 
  
