@@ -130,7 +130,7 @@ if(APPLE)
 	include_directories(${SDL2_INCLUDE_DIR})
 
 	set(BOOST_LIBS ${Boost_LIBRARIES})
-	set(LIBS ${LIBS} ${Boost_LIBRARIES})
+	set(LIBS -L/usr/local/lib ${LIBS} ${Boost_LIBRARIES})
 	set(SDL_LIBS
 		${SDL2_LIBRARIES}
 		${GLEW_LIBRARIES}
