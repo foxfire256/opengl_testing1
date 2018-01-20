@@ -8,7 +8,7 @@ project(ot1)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 
-include_directories("../common-cpp")
+#include_directories("../common-cpp")
 
 
 # this hasn't been tested for Visual studio as of 2018.01.20
@@ -163,12 +163,13 @@ if(UNIX AND NOT APPLE)
 	include_directories(${SDL2_INCLUDE_DIR})
 
 	set(BOOST_LIBS ${Boost_LIBRARIES})
-	set(LIBS ${LIBS})
-	set(SDL2_LIBS ${SDL2_LIBRARIES})
-	set(GUI_LIBS ${SDL2_LIBS} -lSDL2_ttf -lSDL2_image ${OPENGL_LIBRARY} ${GLEW_LIBRARIES})
+	set(LIBS ${LIBS} ${Boost_LIBRARIES})
+	set(SDL_LIBS ${SDL2_LIBRARIES})
 
 	find_package(Qt5Core)
 	find_package(Qt5Widgets)
+	
+	set(QT_LIBS Qt5::Core Qt5::Widgets)
 
 	include_directories("/usr/include")
 	include_directories("/usr/include/eigen3")
@@ -230,13 +231,13 @@ else(APPLE)
 endif(APPLE)
 
 add_executable(${PROJECT_NAME}_sdl ${MAIN_SOURCE_SDL})
+target_link_libraries(${PROJECT_NAME}_sdl ${LIBS} ${SDL_LIBS})
 
 # Instruct CMake to run Qt moc automatically when needed.
-#set(CMAKE_AUTOMOC ON)
-#add_executable(${PROJECT_NAME}_config_editor ${CONFIG_EDITOR_SOURCE})
-#target_link_libraries(${PROJECT_NAME}_config_editor
-#	${LBIS} ${EDITOR_LIBS} Qt5::Core Qt5::Widgets gcore)
-#set(CMAKE_AUTOMOC OFF)
+set(CMAKE_AUTOMOC ON)
+add_executable(${PROJECT_NAME}_qt ${MAIN_SOURCE_QT})
+target_link_libraries(${PROJECT_NAME}_qt ${LIBS} ${QT_LIBS})
+set(CMAKE_AUTOMOC OFF)
 
 
 MESSAGE( STATUS "MINGW: " ${MINGW} )
