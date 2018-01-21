@@ -51,10 +51,13 @@ private:
 	Eigen::Vector3f rot, trans;
 	float scale;
 	
+	GLuint shader_id, shader_vert_id, shader_frag_id;
+	
 	fox::counter *update_counter;
 	fox::counter *fps_counter;
 	
 	void print_info();
+	void load_shaders();
 };
 
 
