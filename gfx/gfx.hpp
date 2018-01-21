@@ -12,9 +12,10 @@ public:
 	gfx(){}
 	virtual ~gfx(){}
 	
-	virtual void init(){}
+	virtual void init(int w, int h){}
 	virtual void render(){}
 	virtual void deinit(){}
+	virtual void resize(int w, int h){}
 };
 
 

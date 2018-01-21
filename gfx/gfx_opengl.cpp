@@ -5,13 +5,25 @@
 #include "gfx_opengl.hpp"
 
 #include <cstdio>
-
-#include <GL/glew.h>
+#include <string>
 
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
 #else
 #include <GL/glu.h>
+#endif
+
+#include "fox/counter.hpp"
+#include "fox/gfx/eigen_opengl.hpp"
+
+#ifdef __ANDROID__
+std::string data_root = "/sdcard/tbsg2-data";
+#elif __APPLE__
+std::string data_root = "~/dev/tbsg2-data";
+#elif _WIN32
+std::string data_root = "C:/dev/tbsg2-data";
+#else // Linux
+std::string data_root = "~/dev/tbsg2-data";
 #endif
 
 #define print_opengl_error() print_opengl_error2((char *)__FILE__, __LINE__)
@@ -27,15 +39,15 @@ gfx_opengl::~gfx_opengl()
 
 }
 
-void gfx_opengl::init()
+void gfx_opengl::init(int w, int h)
 {
+	// init glew first
 	glewExperimental = GL_TRUE; // Needed in core profile
 	if(glewInit() != GLEW_OK)
 	{
 		printf("Failed to initialize GLEW\n");
-		return;
+		exit(-1);
 	}
-	printf("GLEW version %s\n", glewGetString(GLEW_VERSION));
 	
 	// HACK: to get around initial glew error with core profiles
 	GLenum gl_err = glGetError();
@@ -46,69 +58,117 @@ void gfx_opengl::init()
 		gl_err = glGetError();
 	}
 	
+	print_opengl_error();
+	
+	print_info();
+	
+	// init basic OpenGL stuff
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND); // alpha channel
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	glEnable(GL_POLYGON_SMOOTH);
+	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	
+	// OpenGL 3.2 core requires a VAO to be bound to use a VBO
+	// WARNING: GLES 2.0 does not support VAOs
+	glGenVertexArrays(1, &default_vao);
+	glBindVertexArray(default_vao);
+	
+	trans = {0.0f, 0.0f, 0.0f};
+	rot = {0.0f, 0.0f, 0.0f};
+	
+	eye = Eigen::Vector3f(0.0f, 0.0f, 3.0f);
+	target = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
+	up = Eigen::Vector3f(0.0f, 1.0f, 0.0f);
+	
+	
+}
+
+void gfx_opengl::render()
+{
+
+}
+
+void gfx_opengl::resize(int w, int h)
+{
+
+}
+
+void gfx_opengl::deinit()
+{
+
+}
+
+void gfx_opengl::print_info()
+{
+	printf("GLEW library version %s\n", glewGetString(GLEW_VERSION));
+	
 	if(glewIsSupported("GL_VERSION_5_1"))
 	{
-		printf("GLEW GL_VERSION_5_1\n");
+		printf("GLEW supported GL_VERSION_5_1\n");
 	}
 	else if(glewIsSupported("GL_VERSION_5_0"))
 	{
-		printf("GLEW GL_VERSION_5_0\n");
+		printf("GLEW supported GL_VERSION_5_0\n");
 	}
 	else if(glewIsSupported("GL_VERSION_4_8"))
 	{
-		printf("GLEW GL_VERSION_4_8\n");
+		printf("GLEW supported GL_VERSION_4_8\n");
 	}
 	else if(glewIsSupported("GL_VERSION_4_7"))
 	{
-		printf("GLEW GL_VERSION_4_7\n");
+		printf("GLEW supported GL_VERSION_4_7\n");
 	}
 	else if(glewIsSupported("GL_VERSION_4_6"))
 	{
-		printf("GLEW GL_VERSION_4_6\n");
+		printf("GLEW supported GL_VERSION_4_6\n");
 	}
 	else if(glewIsSupported("GL_VERSION_4_5"))
 	{
-		printf("GLEW GL_VERSION_4_5\n");
+		printf("GLEW supported GL_VERSION_4_5\n");
 	}
 	else if(glewIsSupported("GL_VERSION_4_4"))
 	{
-		printf("GLEW GL_VERSION_4_4\n");
+		printf("GLEW supported GL_VERSION_4_4\n");
 	}
 	else if(glewIsSupported("GL_VERSION_4_3"))
 	{
-		printf("GLEW GL_VERSION_4_3\n");
+		printf("GLEW supported GL_VERSION_4_3\n");
 	}
 	else if(glewIsSupported("GL_VERSION_4_2"))
 	{
-		printf("GLEW GL_VERSION_4_2\n");
+		printf("GLEW supported GL_VERSION_4_2\n");
 	}
 	else if(glewIsSupported("GL_VERSION_4_1"))
 	{
-		printf("GLEW GL_VERSION_4_1\n");
+		printf("GLEW supported GL_VERSION_4_1\n");
 	}
 	else if(glewIsSupported("GL_VERSION_4_0"))
 	{
-		printf("GLEW GL_VERSION_4_0\n");
+		printf("GLEW supported GL_VERSION_4_0\n");
 	}
 	else if(glewIsSupported("GL_VERSION_3_2"))
 	{
-		printf("GLEW GL_VERSION_3_2\n");
+		printf("GLEW supported GL_VERSION_3_2\n");
 	}
 	else if(glewIsSupported("GL_VERSION_3_1"))
 	{
-		printf("GLEW GL_VERSION_3_1\n");
+		printf("GLEW supported GL_VERSION_3_1\n");
 	}
 	else if(glewIsSupported("GL_VERSION_3_0"))
 	{
-		printf("GLEW GL_VERSION_3_0\n");
+		printf("GLEW supported GL_VERSION_3_0\n");
 	}
 	else if(glewIsSupported("GL_VERSION_2_1"))
 	{
-		printf("GLEW GL_VERSION_2_1\n");
+		printf("GLEW supported GL_VERSION_2_1\n");
 	}
 	else if(glewIsSupported("GL_VERSION_2_0"))
 	{
-		printf("GLEW GL_VERSION_2_0\n");
+		printf("GLEW supported GL_VERSION_2_0\n");
 	}
 	else
 	{
@@ -121,17 +181,10 @@ void gfx_opengl::init()
 	printf("GL_SHADING_LANGUAGE_VERSION: %s\n",
 		   glGetString(GL_SHADING_LANGUAGE_VERSION));
 	
-	print_opengl_error();
-}
-
-void gfx_opengl::render()
-{
-
-}
-
-void gfx_opengl::deinit()
-{
-
+	printf("Eigen version: %d.%d.%d\n", EIGEN_WORLD_VERSION,
+		   EIGEN_MAJOR_VERSION,  EIGEN_MINOR_VERSION);
+	
+	
 }
 
 //------------------------------------------------------------------------------

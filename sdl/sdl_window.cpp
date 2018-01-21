@@ -3,6 +3,9 @@
 //
 
 #include "sdl_window.hpp"
+
+#include <iostream>
+
 #include "gfx/gfx_factory.hpp"
 #include "gfx/gfx.hpp"
 
@@ -49,7 +52,7 @@ void sdl_window::init()
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);
 	
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 	
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
 						SDL_GL_CONTEXT_PROFILE_CORE);
@@ -72,9 +75,16 @@ void sdl_window::init()
 	// 0 = no vsync
 	SDL_GL_SetSwapInterval(0);
 	
+	std::cout << "Running on platform: " << SDL_GetPlatform() << std::endl;
+	std::cout << "Number of logical CPU cores: " << SDL_GetCPUCount() << std::endl;
+	int ram_mb = SDL_GetSystemRAM();
+	char buffer[8];
+	snprintf(buffer, 8, "%.1f", ram_mb / 1024.0f);
+	std::cout << "System RAM " << ram_mb << "MB (" << buffer << " GB)\n";
+	
 	gf = new gfx_factory();
 	g = gf->get_gfx();
-	g->init();
+	g->init(win_w, win_h);
 }
 
 void sdl_window::deinit()
@@ -111,9 +121,9 @@ void sdl_window::render()
 	SDL_GL_SwapWindow(window);
 }
 
-void sdl_window::resize()
+void sdl_window::resize(int w, int h)
 {
-
+	g->resize(w, h);
 }
 
 int sdl_window::main_loop()

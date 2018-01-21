@@ -8,7 +8,7 @@ project(ot1)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 
-#include_directories("../common-cpp")
+include_directories("../common-cpp")
 
 
 # this hasn't been tested for Visual studio as of 2018.01.20
@@ -270,6 +270,12 @@ set(SOURCE_GFX
 	gfx/gfx_factory.cpp
 	gfx/gfx_opengl.hpp
 	gfx/gfx_opengl.cpp
+	../common-cpp/fox/gfx/eigen_opengl.hpp
+	../common-cpp/fox/gfx/eigen_opengl.cpp
+	)
+set(SOURCE_COMMON
+	../common-cpp/fox/counter.hpp
+	../common-cpp/fox/counter.cpp
 	)
 
 # static libraries don't work so well on Apple for some reason
@@ -279,14 +285,22 @@ else(APPLE)
 	set(LIBRARY_TYPE STATIC)
 endif(APPLE)
 
-add_executable(${PROJECT_NAME}_sdl ${MAIN_SOURCE_SDL} ${SOURCE_SDL} ${SOURCE_GFX})
+add_executable(${PROJECT_NAME}_sdl
+	${MAIN_SOURCE_SDL}
+	${SOURCE_SDL}
+	${SOURCE_GFX}
+	${SOURCE_COMMON})
 target_link_libraries(${PROJECT_NAME}_sdl ${LIBS} ${SDL_LIBS})
 # this is needed to make headers work
 #target_include_directories(${PROJECT_NAME}_sdl PUBLIC sdl)
 
 # Instruct CMake to run Qt moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
-add_executable(${PROJECT_NAME}_qt ${MAIN_SOURCE_QT} ${SOURCE_QT} ${SOURCE_GFX})
+add_executable(${PROJECT_NAME}_qt
+	${MAIN_SOURCE_QT}
+	${SOURCE_QT}
+	${SOURCE_GFX}
+	${SOURCE_COMMON})
 target_link_libraries(${PROJECT_NAME}_qt ${LIBS} ${QT_LIBS})
 #target_include_directories(${PROJECT_NAME}_qt PUBLIC qt)
 set(CMAKE_AUTOMOC OFF)

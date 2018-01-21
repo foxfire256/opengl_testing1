@@ -25,7 +25,7 @@ public:
 	void init();
 	void deinit();
 	void render();
-	void resize();
+	void resize(int w, int h);
 	int main_loop();
 	
 private:

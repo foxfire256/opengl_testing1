@@ -7,6 +7,17 @@
 
 #include "gfx.hpp"
 
+#include <cstdint>
+
+#include <GL/glew.h>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+
+namespace fox
+{
+	class counter;
+}
+
 class gfx_opengl : public gfx
 {
 public:
@@ -14,11 +25,36 @@ public:
 	
 	~gfx_opengl() override;
 	
-	void init() override;
+	void init(int w, int h) override;
 	
 	void render() override;
 	
+	void resize(int w, int h) override;
+	
 	void deinit() override;
+
+private:
+	// an empty vertex array object to bind to
+	uint32_t default_vao;
+	
+	Eigen::Vector3f eye, target, up;
+	Eigen::Affine3f V;
+	Eigen::Projective3f P;
+	// model matrix (specific to the model instance)
+	Eigen::Projective3f MVP;
+	Eigen::Affine3f M, MV;
+	// TODO: should this be Affine3f ?
+	Eigen::Matrix3f normal_matrix;
+	// more shader uniforms
+	Eigen::Vector4f light_pos, color;
+	Eigen::Vector3f La, Ls, Ld;
+	Eigen::Vector3f rot, trans;
+	float scale;
+	
+	fox::counter *update_counter;
+	fox::counter *fps_counter;
+	
+	void print_info();
 };
 
 
