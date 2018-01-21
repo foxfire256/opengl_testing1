@@ -7,8 +7,15 @@
 #include <QtGui/QOpenGLPaintDevice>
 #include <QtGui/QPainter>
 
+#include <QResizeEvent>
+
+#include "gfx/gfx_factory.hpp"
+#include "gfx/gfx.hpp"
+
 opengl_window::opengl_window(QWindow *parent) : QWindow(parent)
 {
+	g = nullptr;
+	
 	animating = false;
 	context = nullptr;
 	device = nullptr;
@@ -19,6 +26,8 @@ opengl_window::~opengl_window()
 {
 	if(device)
 		delete device;
+	g->deinit();
+	delete g;
 }
 
 void opengl_window::render(QPainter *painter)
@@ -28,6 +37,9 @@ void opengl_window::render(QPainter *painter)
 
 void opengl_window::initialize()
 {
+	gfx_factory gf;
+	g = gf.get_gfx();
+	g->init(size().width(), size().height());
 }
 
 void opengl_window::render()
@@ -35,12 +47,20 @@ void opengl_window::render()
 	if(!device)
 		device = new QOpenGLPaintDevice;
 	
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	g->render();
 	
 	device->setSize(size());
 	
 	QPainter painter(device);
 	render(&painter);
+}
+
+void opengl_window::resizeEvent(QResizeEvent *ev)
+{
+	if(g)
+		g->resize(ev->size().width(), ev->size().height());
+	
+	QWindow::resizeEvent(ev);
 }
 
 void opengl_window::renderLater()

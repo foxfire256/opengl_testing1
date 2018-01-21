@@ -10,6 +10,7 @@ class QPainter;
 class QOpenGLContext;
 class QOpenGLPaintDevice;
 
+class gfx;
 
 class opengl_window : public QWindow, protected QOpenGLFunctions
 {
@@ -20,6 +21,8 @@ public:
 	
 	virtual void render(QPainter *painter);
 	virtual void render();
+	
+	virtual void resizeEvent(QResizeEvent *ev) override;
 	
 	virtual void initialize();
 	
@@ -39,4 +42,6 @@ private:
 	
 	QOpenGLContext *context;
 	QOpenGLPaintDevice *device;
+	
+	gfx *g;
 };
