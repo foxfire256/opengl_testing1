@@ -272,6 +272,8 @@ set(SOURCE_GFX
 	gfx/gfx_opengl.cpp
 	../common-cpp/fox/gfx/eigen_opengl.hpp
 	../common-cpp/fox/gfx/eigen_opengl.cpp
+	../common-cpp/fox/obj_model_loader.h
+	../common-cpp/fox/obj_model_loader.c
 	)
 set(SOURCE_COMMON
 	../common-cpp/fox/counter.hpp

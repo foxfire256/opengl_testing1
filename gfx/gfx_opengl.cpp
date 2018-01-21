@@ -15,6 +15,7 @@
 
 #include "fox/counter.hpp"
 #include "fox/gfx/eigen_opengl.hpp"
+#include "fox/obj_model_loader.h"
 
 #ifdef __ANDROID__
 std::string data_root = "/sdcard/opengl_testing1";
@@ -115,6 +116,86 @@ void gfx_opengl::init(int w, int h)
 	MVP = P * MV;
 	
 	load_shaders();
+	
+	// load a mesh
+	mesh = (OBJ_MODEL *)malloc(sizeof(OBJ_MODEL));
+	if(mesh == nullptr)
+	{
+		printf("Failed to allocate memory for obj model\n");
+		exit(-1);
+	}
+	std::string mesh_file = data_root + "/meshes/icosphere.obj";
+	obj_model_load(mesh_file.c_str(), mesh);
+	if(obj_model_check_arrays(mesh))
+		obj_model_gl_arrays(mesh);
+	obj_model_print_info(mesh);
+	printf("Model has %d verticies\n", mesh->vert_count);
+	printf("Vertex data takes up %.3f MB\n", (float)mesh->vert_count * 12 /
+											 (1024 * 1024));
+	printf("Normal data takes up %.3f MB\n", (float)mesh->vert_count * 12 /
+											 (1024 * 1024));
+	
+	// see if we have a material file to load uniforms from
+	if(mesh->mtl)
+	{
+		Ka = Eigen::Vector3f(mesh->mtl->Ka[0], mesh->mtl->Ka[1], mesh->mtl->Ka[2]);
+		Ks = Eigen::Vector3f(mesh->mtl->Ks[0], mesh->mtl->Ks[1], mesh->mtl->Ks[2]);
+		Kd = Eigen::Vector3f(mesh->mtl->Kd[0], mesh->mtl->Kd[1], mesh->mtl->Kd[2]);
+		// TODO: make sure Ns is what we want for shininess
+		shininess = mesh->mtl->Ns;
+		
+		//this->texture_filename = m->mtl->texture_filename;
+	}
+		// otherwise create some defaults at least
+	else
+	{
+		Ka = Eigen::Vector3f(0.3f, 0.3f, 0.3f);
+		Ks = Eigen::Vector3f(0.1f, 0.1f, 0.1f);
+		Kd = Eigen::Vector3f(0.6f, 0.6f, 0.6f);
+		shininess = 5.0f;
+	}
+	
+	// create VBOs
+	glGenBuffers(1, &vertex_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->vert_count * 3,
+				 mesh->v, GL_STATIC_DRAW);
+	print_opengl_error();
+	glGenBuffers(1, &normal_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, normal_vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->vert_count * 3,
+				 mesh->vn, GL_STATIC_DRAW);
+	print_opengl_error();
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	// set shader uniforms and arrays
+	int u;
+	glUseProgram(shader_id);
+	u = glGetUniformLocation(shader_id, "light_pos");
+	glUniform4fv(u, 1, light_pos.data());
+	u = glGetUniformLocation(shader_id, "La");
+	glUniform3fv(u, 1, La.data());
+	u = glGetUniformLocation(shader_id, "Ls");
+	glUniform3fv(u, 1, Ls.data());
+	u = glGetUniformLocation(shader_id, "Ld");
+	glUniform3fv(u, 1, Ld.data());
+	u = glGetUniformLocation(shader_id, "color");
+	glUniform4fv(u, 1, color.data());
+	u = glGetUniformLocation(shader_id, "MVP");
+	glUniformMatrix4fv(u, 1, GL_FALSE, MVP.data());
+	u = glGetUniformLocation(shader_id, "MV");
+	glUniformMatrix4fv(u, 1, GL_FALSE, MV.data());
+	u = glGetUniformLocation(shader_id, "normal_matrix");
+	glUniformMatrix3fv(u, 1, GL_FALSE, normal_matrix.data());
+	u = glGetUniformLocation(shader_id, "shininess");
+	glUniform1f(u, shininess);
+	u = glGetUniformLocation(shader_id, "Ka");
+	glUniform3fv(u, 1, Ka.data());
+	u = glGetUniformLocation(shader_id, "Ks");
+	glUniform3fv(u, 1, Ks.data());
+	u = glGetUniformLocation(shader_id, "Kd");
+	glUniform3fv(u, 1, Kd.data());
+	print_opengl_error();
 }
 
 void gfx_opengl::render()

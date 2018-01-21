@@ -17,6 +17,7 @@ namespace fox
 {
 	class counter;
 }
+struct OBJ_MODEL;
 
 class gfx_opengl : public gfx
 {
@@ -48,13 +49,18 @@ private:
 	// more shader uniforms
 	Eigen::Vector4f light_pos, color;
 	Eigen::Vector3f La, Ls, Ld;
+	Eigen::Vector3f Ka, Ks, Kd;
+	float shininess;
 	Eigen::Vector3f rot, trans;
 	float scale;
 	
 	GLuint shader_id, shader_vert_id, shader_frag_id;
+	GLuint vertex_vbo, normal_vbo;
 	
 	fox::counter *update_counter;
 	fox::counter *fps_counter;
+	
+	OBJ_MODEL *mesh;
 	
 	void print_info();
 	void load_shaders();
