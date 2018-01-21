@@ -1,5 +1,4 @@
 *.o
-*.obj
 build/*
 *.exe
 cmake-build-debug/*
