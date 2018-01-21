@@ -141,11 +141,22 @@ int sdl_window::main_loop()
 				break;
 			case SDL_KEYUP:
 				break;
-			case SDL_WINDOWEVENT_CLOSE:
-				done = 1;
-				break;
 			case SDL_QUIT:
 				done = 1;
+				break;
+			case SDL_WINDOWEVENT:
+				switch (event.window.event)
+				{
+					case SDL_WINDOWEVENT_CLOSE:
+						done = 1;
+						break;
+					case SDL_WINDOWEVENT_RESIZED:
+						resize(event.window.data1, event.window.data2);
+						break;
+					default:
+						break;
+				}
+			default:
 				break;
 		}
 	}
