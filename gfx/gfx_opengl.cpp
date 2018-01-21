@@ -42,6 +42,9 @@ gfx_opengl::~gfx_opengl()
 
 void gfx_opengl::init(int w, int h)
 {
+	win_w = w;
+	win_h = h;
+	
 	// init glew first
 	glewExperimental = GL_TRUE; // Needed in core profile
 	if(glewInit() != GLEW_OK)
@@ -196,16 +199,83 @@ void gfx_opengl::init(int w, int h)
 	u = glGetUniformLocation(shader_id, "Kd");
 	glUniform3fv(u, 1, Kd.data());
 	print_opengl_error();
+	
+	// start counters
+	update_counter = new fox::counter();
+	fps_counter = new fox::counter();
+	
+	rot_vel = 16.0f;
 }
 
 void gfx_opengl::render()
 {
-
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	float dt = update_counter->update();
+	rot[1] = rot_vel * dt;
+	M = M * Eigen::AngleAxisf(rot[0] / 180.0f * (float)M_PI,
+							  Eigen::Vector3f::UnitX());
+	M = M * Eigen::AngleAxisf(rot[1] / 180.0f * (float)M_PI,
+							  Eigen::Vector3f::UnitY());
+	M = M * Eigen::AngleAxisf(rot[2] / 180.0f * (float)M_PI,
+							  Eigen::Vector3f::UnitZ());
+	
+	MV = V * M;
+	
+	normal_matrix(0, 0) = MV(0, 0);
+	normal_matrix(0, 1) = MV(0, 1);
+	normal_matrix(0, 2) = MV(0, 2);
+	
+	normal_matrix(1, 0) = MV(1, 0);
+	normal_matrix(1, 1) = MV(1, 1);
+	normal_matrix(1, 2) = MV(1, 2);
+	
+	normal_matrix(2, 0) = MV(2, 0);
+	normal_matrix(2, 1) = MV(2, 1);
+	normal_matrix(2, 2) = MV(2, 2);
+	
+	MVP = P * MV;
+	
+	glUseProgram(shader_id);
+	int u;
+	u = glGetUniformLocation(shader_id, "MVP");
+	glUniformMatrix4fv(u, 1, GL_FALSE, MVP.data());
+	u = glGetUniformLocation(shader_id, "MV");
+	glUniformMatrix4fv(u, 1, GL_FALSE, MV.data());
+	u = glGetUniformLocation(shader_id, "normal_matrix");
+	glUniformMatrix3fv(u, 1, GL_FALSE, normal_matrix.data());
+	GLint vertex_loc, normal_loc;
+	vertex_loc = glGetAttribLocation(shader_id, "vertex");
+	normal_loc = glGetAttribLocation(shader_id, "normal");
+	
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
+	glEnableVertexAttribArray(vertex_loc);
+	glVertexAttribPointer(vertex_loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, normal_vbo);
+	glEnableVertexAttribArray(normal_loc);
+	glVertexAttribPointer(normal_loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	
+	glDrawArrays(GL_TRIANGLES, 0, mesh->vert_count);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void gfx_opengl::resize(int w, int h)
 {
-
+	win_w = w;
+	win_h = h;
+	
+	glViewport(0, 0, win_w, win_h);
+	fox::gfx::perspective(65.0f, (float)win_w / (float)win_h, 0.01f, 40.0f, P);
+	//fox::gfx::ortho(0.0f, (float)win_w, 0.0f, (float)win_h, -10.0f, 10.0f, P);
+	
+	MVP = P * MV;
+	
+	glUseProgram(shader_id);
+	int u;
+	u = glGetUniformLocation(shader_id, "MVP");
+	glUniformMatrix4fv(u, 1, GL_FALSE, MVP.data());
 }
 
 void gfx_opengl::deinit()
@@ -218,6 +288,15 @@ void gfx_opengl::deinit()
 		glDeleteShader(shader_frag_id);
 	if(shader_id != 0)
 		glDeleteProgram(shader_id);
+	
+	glDeleteBuffers(1, &vertex_vbo);
+	glDeleteBuffers(1, &normal_vbo);
+	
+	// TODO: this probably can be done after the VBOs are created
+	obj_model_free(mesh);
+	
+	delete update_counter;
+	delete fps_counter;
 }
 
 void gfx_opengl::load_shaders()

@@ -35,6 +35,7 @@ public:
 	void deinit() override;
 
 private:
+	int win_w, win_h;
 	// an empty vertex array object to bind to
 	uint32_t default_vao;
 	
@@ -59,6 +60,8 @@ private:
 	
 	fox::counter *update_counter;
 	fox::counter *fps_counter;
+	
+	float rot_vel;
 	
 	OBJ_MODEL *mesh;
 	
