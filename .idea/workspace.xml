@@ -16,11 +16,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e8e2cc-f5bc-4605-9823-61ec243efe2a" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/qt/opengl_window.cpp" afterPath="$PROJECT_DIR$/qt/opengl_window.cpp" />
-      <change beforePath="$PROJECT_DIR$/qt/opengl_window.hpp" afterPath="$PROJECT_DIR$/qt/opengl_window.hpp" />
-    </list>
+    <list default="true" id="48e8e2cc-f5bc-4605-9823-61ec243efe2a" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -67,8 +63,8 @@
           <file leaf-file-name="opengl_window.cpp" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/qt/opengl_window.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="99">
-                  <caret line="16" column="16" lean-forward="false" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="16" />
+                <state relative-caret-position="315">
+                  <caret line="28" column="16" lean-forward="true" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
                   <folding />
                 </state>
               </provider>
@@ -319,7 +315,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23221000" />
+    <option name="totallyTimeSpent" value="23327000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1143" y="0" width="2010" height="1412" extended-state="0" />
@@ -648,8 +644,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/qt/opengl_window.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="99">
-          <caret line="16" column="16" lean-forward="false" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="16" />
+        <state relative-caret-position="315">
+          <caret line="28" column="16" lean-forward="true" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
           <folding />
         </state>
       </provider>
