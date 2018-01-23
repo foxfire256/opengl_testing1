@@ -47,6 +47,14 @@ void opengl_window::render()
 	if(!device)
 		device = new QOpenGLPaintDevice;
 	
+	// Qt messes up the OpenGL state after initialize()
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND); // alpha channel
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_POLYGON_SMOOTH);
+	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	
 	g->render();
 	
 	device->setSize(size());
