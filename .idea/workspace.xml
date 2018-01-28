@@ -16,9 +16,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e8e2cc-f5bc-4605-9823-61ec243efe2a" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/qt/opengl_window.cpp" afterPath="$PROJECT_DIR$/qt/opengl_window.cpp" />
-    </list>
+    <list default="true" id="48e8e2cc-f5bc-4605-9823-61ec243efe2a" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -65,8 +63,8 @@
           <file leaf-file-name="opengl_window.cpp" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/qt/opengl_window.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1026">
-                  <caret line="57" column="16" lean-forward="false" selection-start-line="57" selection-start-column="16" selection-end-line="57" selection-end-column="16" />
+                <state relative-caret-position="144">
+                  <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -323,12 +321,12 @@
       <option name="presentableId" value="Default" />
       <updated>1516461799905</updated>
       <workItem from="1516461802354" duration="9638000" />
-      <workItem from="1516677119390" duration="190000" />
+      <workItem from="1516677119390" duration="265000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23517000" />
+    <option name="totallyTimeSpent" value="23592000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="509" y="0" width="2010" height="1412" extended-state="0" />
@@ -731,8 +729,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/qt/opengl_window.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1026">
-          <caret line="57" column="16" lean-forward="false" selection-start-line="57" selection-start-column="16" selection-end-line="57" selection-end-column="16" />
+        <state relative-caret-position="144">
+          <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
           <folding />
         </state>
       </provider>

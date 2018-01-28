@@ -9,6 +9,7 @@
 
 #include <cstdint>
 
+#define _USE_MATH_DEFINES
 #include <GL/glew.h>
 #include <Eigen/Core>
 #include <Eigen/Geometry>

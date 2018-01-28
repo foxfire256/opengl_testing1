@@ -23,33 +23,19 @@ if(MSVC)
 	SET(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS}")
 	
 	find_package(OpenGL REQUIRED)
-	#find_library(OPENGL_LIBRARY NAMES OpenGL32 opengl32)
 	
-	find_package(Qt5Core)
-	find_package(Qt5Widgets)
-	find_package(Qt5OpenGL)
+	set(VC_PREFIX "C:\\vclibs\\vc2015libs")
 	
 	set(LIBS ${LIBS} kernel32.lib)
-	set(SDL2_LIBS
+	set(SDL2_LIBRARIES
 		optimized "C:\\vclibs\\vc2015libs\\lib\\SDL2main.lib"
 		debug "C:\\vclibs\\vc2015libs\\lib\\debug\\SDL2main.lib")
-	set(SDL2_LIBS ${SDL2_LIBS}
+	set(SDL2_LIBRARIES ${SDL2_LIBRARIES}
 		optimized "C:\\vclibs\\vc2015libs\\lib\\SDL2.lib"
 		debug "C:\\vclibs\\vc2015libs\\lib\\debug\\SDL2.lib")
-	set(GUI_LIBS ${GUI_LIBS} ${SDL2_LIBS}
-		optimized "C:\\vclibs\\vc2015libs\\lib\\SDL2_ttf.lib"
-		debug "C:\\vclibs\\vc2015libs\\lib\\debug\\SDL2_ttf.lib")
-	set(GUI_LIBS ${GUI_LIBS}
-		optimized "C:\\vclibs\\vc2015libs\\lib\\SDL2_image.lib"
-		debug "C:\\vclibs\\vc2015libs\\lib\\debug\\SDL2_image.lib")
-	set(GUI_LIBS ${GUI_LIBS}
+	set(GLEW_LIBRARIES
 		optimized "C:\\vclibs\\vc2015libs\\lib\\glew32.lib"
 		debug "C:\\vclibs\\vc2015libs\\lib\\debug\\glew32d.lib")
-	set(GUI_LIBS ${GUI_LIBS} ${OPENGL_LIBRARY})
-	
-	#set(PNG_LIBRARIES
-	#	optimized "C:\\vclibs\\vc2015libs\\lib\\libpng16.lib"
-	#	debug "C:\\vclibs\\vc2015libs\\lib\\debug\\libpng16d.lib")
 	
 	set(BOOST_LIBS ${BOOST_LIBS}
 		optimized "C:\\vclibs\\vc2015libs\\lib\\libboost_program_options-vc140-mt-1_63.lib"
@@ -60,6 +46,26 @@ if(MSVC)
 	set(BOOST_LIBS ${BOOST_LIBS}
 		optimized "C:\\vclibs\\vc2015libs\\lib\\libboost_filesystem-vc140-mt-1_63.lib"
 		debug "C:\\vclibs\\vc2015libs\\lib\\debug\\libboost_filesystem-vc140-mt-gd-1_63.lib")
+		
+	set(SDL_LIBS
+		${LIBS}
+		${SDL2_LIBRARIES}
+		${GLEW_LIBRARIES}
+		${OPENGL_LIBRARIES}
+		)
+	
+	set(QT_DIR "C:\\Qt\\Qt5.10.0\\5.10.0\\msvc2017_64")
+	
+	find_package(Qt5Core)
+	find_package(Qt5Widgets)
+	find_package(Qt5OpenGL)
+	
+	set(QT_LIBS
+		${LIBS}
+		Qt5::Core Qt5::Widgets Qt5::OpenGL
+		${GLEW_LIBRARIES}
+		${OPENGL_LIBRARIES}
+		)
 	
 	include_directories("C:\\vclibs\\vc2015libs\\include")
 endif(MSVC)
