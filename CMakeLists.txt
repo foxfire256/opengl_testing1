@@ -77,10 +77,6 @@ if(MINGW OR MSYS)
 	
 	find_package(OpenGL REQUIRED)
 	find_library(OPENGL_LIBRARY NAMES GL)
-	#find_package(Freetype REQUIRED)
-	#include_directories(${FREETYPE_INCLUDE_DIRS})
-	#find_package(PNG REQUIRED)
-	#include_directories(${PNG_INCLUDE_DIR})
 	find_package(Boost COMPONENTS program_options system filesystem REQUIRED)
 	include_directories(${Boost_INCLUDE_DIRS})
 	find_package(GLEW REQUIRED)
@@ -99,6 +95,7 @@ if(MINGW OR MSYS)
 		${OPENGL_LIBRARIES}
 		)
 
+	set(QT_DIR "c:/msys64/mingw64")
 	find_package(Qt5Core)
 	find_package(Qt5Widgets)
 	find_package(Qt5OpenGL)
@@ -118,17 +115,10 @@ if(APPLE)
 	set(CMAKE_LIBRARY_PATH "/usr/local/lib")
 	
 	find_package(OpenGL REQUIRED)
-	#find_library(OPENGL_LIBRARY NAMES OpenGL)
-	#find_package(Freetype REQUIRED)
-	#include_directories(${FREETYPE_INCLUDE_DIRS})
-	#find_package(PNG REQUIRED)
-	#include_directories(${PNG_INCLUDE_DIR})
 	find_package(Boost COMPONENTS program_options system filesystem REQUIRED)
 	include_directories(${Boost_INCLUDE_DIRS})
 	find_package(GLEW REQUIRED)
 	include_directories(${GLEW_INCLUDE_DIRS})
-	find_package(OpenAL REQUIRED)
-	include_directories(${OPENAL_INCLUDE_DIRS})
 
 	INCLUDE(FindPkgConfig)
 
@@ -146,24 +136,18 @@ if(APPLE)
 	# If there are problems with qt5 on Apple run 'which qmake' and make sure
 	# it is the correct one. Usually you have to run 'brew link qt5 --force'.
 	# Anaconda causes problems too since it has qt4 and other libs.
-	set(CMAKE_PREFIX_PATH "/usr/local/opt/qt")
-	set(CMAKE_INCLUDE_PATH "/usr/local/opt/qt/include")
-	set(CMAKE_LIBRARY_PATH "/usr/local/opt/qt/lib")
+	set(QT_DIR "/usr/local/opt/qt")
 	find_package(Qt5Core)
 	find_package(Qt5Widgets)
 	find_package(Qt5OpenGL)
 	
 	set(QT_LIBS
-		Qt5::Core Qt5::Widgets Qt5::OpenGL
+		-L/usr/local/opt/qt/lib Qt5::Core Qt5::Widgets Qt5::OpenGL
 		${GLEW_LIBRARIES}
 		${OPENGL_LIBRARIES}
 		)
 	
 	include_directories("/usr/local/opt/qt/include")
-	
-	set(CMAKE_PREFIX_PATH "/usr/local")
-	set(CMAKE_INCLUDE_PATH "/usr/local/include")
-	set(CMAKE_LIBRARY_PATH "/usr/local/lib")
 	
 	include_directories("/usr/local/include")
 	include_directories("/usr/local/include/eigen3")
@@ -177,10 +161,6 @@ if(UNIX AND NOT APPLE)
 
 	find_package(OpenGL REQUIRED)
 	find_library(OPENGL_LIBRARY NAMES GL)
-	#find_package(Freetype REQUIRED)
-	#include_directories(${FREETYPE_INCLUDE_DIRS})
-	#find_package(PNG REQUIRED)
-	#include_directories(${PNG_INCLUDE_DIR})
 	find_package(Boost COMPONENTS program_options system filesystem REQUIRED)
 	include_directories(${Boost_INCLUDE_DIRS})
 	find_package(GLEW REQUIRED)
@@ -299,8 +279,6 @@ add_executable(${PROJECT_NAME}_sdl
 	${SOURCE_GFX}
 	${SOURCE_COMMON})
 target_link_libraries(${PROJECT_NAME}_sdl ${LIBS} ${SDL_LIBS})
-# this is needed to make headers work
-#target_include_directories(${PROJECT_NAME}_sdl PUBLIC sdl)
 
 # Instruct CMake to run Qt moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
@@ -310,7 +288,6 @@ add_executable(${PROJECT_NAME}_qt
 	${SOURCE_GFX}
 	${SOURCE_COMMON})
 target_link_libraries(${PROJECT_NAME}_qt ${LIBS} ${QT_LIBS})
-#target_include_directories(${PROJECT_NAME}_qt PUBLIC qt)
 set(CMAKE_AUTOMOC OFF)
 
 
